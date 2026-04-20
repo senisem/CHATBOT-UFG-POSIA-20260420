@@ -1,0 +1,26 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Diagrama de Componentes do Chatbot
+
+Container_Boundary(backend, "Backend (Python)") {
+    Component(controller, "Controller", "Recebe requisições HTTP/JSON")
+    Component(service, "Service", "Implementa lógica de negócio")
+    Component(repository, "Repository", "Gerencia interação com RAG/PDF")
+}
+
+Container(frontend, "Frontend", "Streamlit/Gradio", "Interface Web")
+
+System_Ext(openai, "OpenAI Claude API", "Fornece respostas de IA")
+System_Ext(pdf, "Arquivo PDF", "Dados da Legislação CVM175")
+
+Rel(frontend, controller, "HTTP/JSON", "Requisição do usuário")
+Rel(controller, service, "Chama", "Processa solicitação")
+Rel(service, repository, "Consulta", "Obtém contexto RAG")
+Rel(repository, pdf, "Lê", "Extrai dados do PDF")
+Rel(service, openai, "API Call", "Envia prompt enriquecido")
+Rel(openai, service, "Resposta", "Retorna resposta da IA")
+Rel(service, controller, "Retorna", "Envia resposta processada")
+Rel(controller, frontend, "HTTP/JSON", "Exibe resposta ao usuário")
+
+@enduml
