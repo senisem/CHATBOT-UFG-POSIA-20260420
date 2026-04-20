@@ -46,3 +46,52 @@ O projeto está em andamento. Os próximos passos incluem scaffolding manual do 
 - Instalado Microsoft OpenJDK 21 via winget.
 - Adicionado Java ao PATH da sessão do terminal.
 - Executado comando de preview do PlantUML no VS Code para renderizar o diagrama.
+
+## Iterações do Dia 20/04/2026
+
+### Resolução de Erro Git
+- **Problema:** Erro `non-fast-forward` ao tentar fazer push da branch `main`
+- **Causa:** Repositório remoto tinha commits que não estavam na cópia local
+- **Solução aplicada:**
+  1. Executado `git pull --allow-unrelated-histories` para sincronizar históricos não relacionados
+  2. Criado merge commit automático
+  3. Executado `git push -u origin main` com sucesso
+- **Resultado:** Branch `main` sincronizada e enviada para GitHub
+
+### Atualização do .gitignore
+- **Objetivo:** Reorganizar `.gitignore` com seções específicas por tecnologia do projeto
+- **Mudanças implementadas:**
+  - Reorganizado arquivo em 11 seções lógicas por tecnologia:
+    * PYTHON - Core & Compiled Files
+    * PYTHON - Distribution & Packaging
+    * PYTHON - Virtual Environments
+    * PYTHON - Testing & Coverage
+    * PYTHON - Type Checking & Linting
+    * PYTHON - Installation & Dependency Managers
+    * FASTAPI & Web Framework
+    * STREAMLIT & GRADIO
+    * LANGCHAIN & LLM APIs (com proteção de credenciais sensíveis)
+    * IDE & EDITOR (VS Code, PyCharm, Jupyter, etc.)
+    * DATABASE
+    * DOCUMENTATION
+    * OS & System Files (macOS, Windows, Linux)
+    * PROJECT-SPECIFIC (data/, logs/, cache/)
+  - Melhorada organização e manutenibilidade do arquivo
+  - Adicionadas seções para credenciais sensíveis (.env, secrets.yaml)
+  - Melhorada cobertura para ferramentas de IDE e SO
+
+### Commit e Push das Alterações
+- **Mensagem de commit (Conventional Commit):**
+  ```
+  chore(.gitignore): reorganizar com seções específicas por tecnologia
+  
+  - Reorganizar .gitignore em 11 seções para melhor manutenibilidade
+  - Adicionar seções específicas para tecnologias do projeto
+  - Consolidar gerenciamento de ambientes Python
+  - Adicionar padrões específicos do projeto
+  - Melhorar cobertura para ferramentas de IDE
+  - Adicionar padrões específicos do SO
+  ```
+- **Hash do commit:** `bdfd2c4`
+- **Alterações:** 1 arquivo modificado, 127 inserções, 154 deletions
+- **Status:** ✅ Enviado com sucesso para `origin/main`
