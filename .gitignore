@@ -40,6 +40,7 @@ env.bak/
 venv.bak/
 .env
 .envrc
++.env.example
 
 # ============================================================================
 # PYTHON - Testing & Coverage
@@ -99,6 +100,7 @@ instance/
 # API keys and sensitive credentials
 .env.local
 .env.*.local
++.env.example
 secrets.yaml
 credentials.json
 
