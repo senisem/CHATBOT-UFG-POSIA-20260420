@@ -162,3 +162,16 @@ O projeto está em andamento. Os próximos passos incluem scaffolding manual do 
 ```
 
 O projeto agora possui um chatbot totalmente integrado com RAG, usando o PDF como fonte única de conhecimento para respostas sobre legislação CVM.
+
+## Atualizações Recentes
+- Incluída suíte de testes completa em `tests/` para validação de:
+  - extração e chunking de PDF em `rag_utils.py`
+  - integração RAG em `get_openai_response.py`
+  - schemas e validações em `app/models.py`
+  - configurações em `app/config.py`
+  - segurança e middleware em `app/security.py`
+  - endpoints FastAPI em `app/main.py`
+- Executado `python -m pytest -q tests` com resultado `29 passed`.
+- Ajustados mocks de OpenAI para testes assíncronos, garantindo isolamento da API real.
+- Confirmada a presença de `PyMuPDF` em `requirements.txt` para suportar leitura de PDF.
+- Verificados avisos de depreciação do `pydantic` para futuras atualizações (`ConfigDict`, `min_length`/`max_length`).
