@@ -5,6 +5,9 @@ from typing import Optional
 from dataclasses import dataclass
 from openai import AsyncOpenAI, APIError, APIConnectionError, RateLimitError, APIStatusError
 
+# Importar utilitários RAG
+from rag_utils import get_context_for_question
+
 # Configurar logging
 logging.basicConfig(
     level=logging.INFO,
@@ -134,6 +137,46 @@ async def get_openai_response(
         api_key=config.api_key,
         timeout=config.timeout
     )
+    
+    # ============================================================================
+    # Integração RAG: Adicionar contexto do PDF
+    # ============================================================================
+    
+    # Extrair a última mensagem do usuário para obter contexto
+    user_messages = [msg for msg in messages if msg.get("role") == "user"]
+    if user_messages:
+        last_user_message = user_messages[-1]["content"]
+        logger.debug(f"Obtendo contexto RAG para pergunta: {last_user_message[:100]}...")
+        
+        try:
+            rag_context = get_context_for_question(last_user_message)
+            if rag_context:
+                # Criar system message com contexto do PDF
+                system_message = {
+                    "role": "system",
+                    "content": f"Você é um assistente especializado em legislação CVM, especificamente na Resolução 175 consolidada.\n\nUse APENAS o seguinte contexto da Resolução 175 consolidada para responder às perguntas do usuário. Não use conhecimento externo ou generalizações:\n\n---\n{rag_context}\n---\n\nSe a pergunta não puder ser respondida com base neste contexto, informe que não possui informações suficientes sobre o assunto na Resolução 175."
+                }
+                
+                # Inserir system message no início da lista de mensagens
+                messages.insert(0, system_message)
+                logger.info(f"Contexto RAG adicionado: {len(rag_context)} caracteres")
+            else:
+                logger.warning("Nenhum contexto relevante encontrado no PDF")
+                # Mesmo sem contexto, adicionar instrução básica
+                system_message = {
+                    "role": "system", 
+                    "content": "Você é um assistente especializado em legislação CVM. Use apenas informações da Resolução 175 consolidada para responder."
+                }
+                messages.insert(0, system_message)
+                
+        except Exception as e:
+            logger.error(f"Erro ao obter contexto RAG: {e}")
+            # Continuar sem contexto em caso de erro
+            system_message = {
+                "role": "system",
+                "content": "Você é um assistente especializado em legislação CVM. Responda baseado na Resolução 175 consolidada."
+            }
+            messages.insert(0, system_message)
     
     # Retry loop com backoff exponencial
     for tentativa in range(config.max_retries):
