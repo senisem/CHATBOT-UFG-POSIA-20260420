@@ -24,6 +24,11 @@ A API segue a arquitetura C4 especificada no `diagrama_componentes.puml`:
    OpenAI API      Arquivo PDF      Cache/DB
 ```
 
+### Fluxo RAG e base de conhecimento
+- A aplicação usa `rag_utils.py` para extrair e fragmentar o texto do PDF `resol175consolid.pdf`.
+- O RAG identifica os chunks mais relevantes para a pergunta do usuário e adiciona o contexto ao prompt antes de chamar a OpenAI.
+- Isso garante que as respostas sejam fundamentadas no conteúdo da Resolução 175 consolidada.
+
 ## 🔒 Segurança (OWASP)
 
 - **A01 - Broken Access Control**: Rate limiting por IP (60 req/min)
@@ -45,9 +50,16 @@ chatbot/
 │   ├── models.py             # Pydantic models
 │   ├── security.py           # OWASP security middleware
 │   └── __pycache__/
+├── tests/                    # Suíte de testes automatizados
+│   ├── test_config_models_security.py
+│   ├── test_get_openai_response.py
+│   ├── test_main.py
+│   └── test_rag_utils.py
 ├── .env.example              # Example environment variables
 ├── requirements.txt          # Python dependencies
-├── get_openai_response.py    # OpenAI integration
+├── get_openai_response.py    # OpenAI integration and RAG orchestration
+├── rag_utils.py              # PDF chunking e busca de contexto RAG
+├── resol175consolid.pdf      # Base única de conhecimento para RAG
 ├── diagrama_componentes.puml # Architecture diagram
 └── README.md                 # This file
 ```
@@ -220,16 +232,27 @@ Os logs incluem:
 
 ## 🧪 Testing
 
+A aplicação já conta com uma suíte de testes automática para validar a integração RAG, a API FastAPI e a configuração de segurança.
+
 ```bash
-# Executar testes
-pytest
+# Executar todos os testes
+python -m pytest -q tests
 
-# Com cobertura
+# Executar testes com saída detalhada
+python -m pytest -v tests
+
+# Executar testes com cobertura (se instalado)
 pytest --cov=app
-
-# Modo verbose
-pytest -v
 ```
+
+### O que está coberto
+- `test_rag_utils.py`: extração de texto, chunking e busca de contexto do PDF
+- `test_get_openai_response.py`: validações de mensagens, integração OpenAI e injeção de contexto RAG
+- `test_main.py`: endpoints FastAPI e comportamentos HTTP
+- `test_config_models_security.py`: validações de config, modelos Pydantic e middlewares de segurança
+
+### Resultado atual
+- Suíte de testes executada com sucesso: `29 passed`
 
 ## 📦 Deployment
 

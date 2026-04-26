@@ -19,6 +19,14 @@ app/
 Root:
 ├── .env.example         # Template de variáveis de ambiente
 ├── requirements.txt     # Dependências Python
+├── get_openai_response.py # Integração OpenAI e orquestração RAG
+├── rag_utils.py         # Extração e chunking do PDF para RAG
+├── resol175consolid.pdf # Base de conhecimento única
+├── tests/               # Suíte de testes automatizados
+│   ├── test_config_models_security.py
+│   ├── test_get_openai_response.py
+│   ├── test_main.py
+│   └── test_rag_utils.py
 └── API_README.md        # Documentação completa
 ```
 
@@ -172,6 +180,40 @@ def create_app() -> FastAPI:
     setup_security_middleware(app, settings.max_requests_per_minute)
     return app
 ```
+
+### 5️⃣ **rag_utils.py - Pipeline RAG**
+
+**Propósito:** Extrair e selecionar contexto relevante do PDF `resol175consolid.pdf`.
+
+**Fluxo:**
+1. `extract_text_from_pdf()` abre o PDF com `PyMuPDF` (`fitz`) e extrai o texto bruto.
+2. `split_text_into_chunks()` divide o texto em chunks de ~1500 palavras com overlap de 200 palavras.
+3. `find_relevant_chunks()` calcula similaridade simples entre a pergunta e cada chunk usando TF.
+4. `get_context_for_question()` retorna os top chunks relevantes para a pergunta.
+
+**Vantagem:**
+- Permite que o modelo seja alimentado com contexto específico da Resolução 175 consolidada.
+- Reduz dependência de memória e limita a resposta ao conteúdo oficial.
+
+### 6️⃣ **Testes Automatizados**
+
+**Propósito:** Garantir a integridade do sistema e prevenir regressões.
+
+Arquivos de teste existentes:
+- `test_rag_utils.py`
+- `test_get_openai_response.py`
+- `test_main.py`
+- `test_config_models_security.py`
+
+**Cobertura:**
+- Validação do pipeline RAG
+- Comportamento de injeção de contexto no prompt OpenAI
+- Endpoints FastAPI e handlers de erro
+- Configurações e middlewares de segurança
+
+**Execução:** `python -m pytest -q tests`
+
+---
 
 **Vantagem:** Facilita testes e múltiplas instâncias com diferentes configs.
 

@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class OpenAIConfig:
     """Configuração segura para cliente OpenAI."""
     api_key: str
-    model: str = "gpt-4-mini"
+    model: str = "gpt-3.5-turbo"
     temperature: float = 0.7
     max_tokens: Optional[int] = None
     timeout: int = 30
@@ -41,9 +41,9 @@ class OpenAIConfig:
         
         return OpenAIConfig(
             api_key=api_key,
-            model=os.getenv("OPENAI_MODEL", "gpt-4-mini"),
+            model=os.getenv("OPENAI_MODEL", "gpt-3.5-turbo"),
             temperature=float(os.getenv("OPENAI_TEMPERATURE", "0.7")),
-            max_tokens=int(os.getenv("OPENAI_MAX_TOKENS", "0")) or None,
+            max_tokens=int(os.getenv("OPENAI_MAX_TOKENS", "50000")) or None,
             timeout=int(os.getenv("OPENAI_TIMEOUT", "30")),
             max_retries=int(os.getenv("OPENAI_MAX_RETRIES", "3"))
         )
@@ -133,11 +133,7 @@ async def get_openai_response(
             f"Temperature deve estar entre 0.0 e 2.0, recebido {config.temperature}"
         )
     
-    client = AsyncOpenAI(
-        api_key=config.api_key,
-        timeout=config.timeout
-    )
-    
+   
     # ============================================================================
     # Integração RAG: Adicionar contexto do PDF
     # ============================================================================
@@ -177,7 +173,18 @@ async def get_openai_response(
                 "content": "Você é um assistente especializado em legislação CVM. Responda baseado na Resolução 175 consolidada."
             }
             messages.insert(0, system_message)
-    
+
+    client = AsyncOpenAI(
+        api_key=config.api_key,
+        timeout=config.timeout
+    )
+
+ 
+ #   client = AsyncOpenAI(
+ #      api_key=config.api_key,
+ #        timeout=config.timeout
+ #   )
+
     # Retry loop com backoff exponencial
     for tentativa in range(config.max_retries):
         try:
