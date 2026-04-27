@@ -21,9 +21,7 @@ from app.security import (
 )
 
 # Importar a função refatorada de OpenAI
-import sys
-sys.path.insert(0, '/app')
-from get_openai_response import (
+from .get_openai_response import (
     get_openai_response,
     OpenAIConfig,
     OpenAIError,

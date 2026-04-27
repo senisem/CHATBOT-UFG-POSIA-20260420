@@ -9,7 +9,7 @@ sys.path.insert(0, r'C:\Users\Win11\OneDrive\Documents\Projetos\chatbot')
 
 from app.models import Message, ChatRequest, ChatResponse, HealthResponse, ErrorResponse
 from app.config import get_settings
-from rag_utils import extract_text_from_pdf, split_text_into_chunks, find_relevant_chunks
+from .rag_utils import extract_text_from_pdf, split_text_into_chunks, find_relevant_chunks
 import os
 
 

@@ -175,3 +175,80 @@ O projeto agora possui um chatbot totalmente integrado com RAG, usando o PDF com
 - Ajustados mocks de OpenAI para testes assíncronos, garantindo isolamento da API real.
 - Confirmada a presença de `PyMuPDF` em `requirements.txt` para suportar leitura de PDF.
 - Verificados avisos de depreciação do `pydantic` para futuras atualizações (`ConfigDict`, `min_length`/`max_length`).
+
+## Reorganização do Repositório e Documentação (26/04/2026)
+
+### Contexto da Solicitação
+- **Objetivo:** Melhorar a organização do repositório, centralizar documentação e criar um README.md principal.
+- **Análise:** Identificadas ambiguidades e sobreposições na documentação existente, além de arquivos .py na raiz que deveriam estar na pasta `app/`.
+
+### Modificações Implementadas
+
+#### 1. Reorganização de Arquivos Python
+- **Arquivos movidos da raiz para `app/`:**
+  - `diagnose_api.py`
+  - `get_openai_response.py`
+  - `GUIA_INICIANTES.py` (posteriormente convertido)
+  - `rag_utils.py`
+  - `test_endpoints.py`
+  - `test_structure.py`
+- **Ajustes de imports realizados:**
+  - Em `app/main.py`: Alterado para import relativo `from .get_openai_response import ...` (removido `sys.path.insert`)
+  - Em `app/get_openai_response.py`: `from .rag_utils import get_context_for_question`
+  - Em `app/test_structure.py`: `from .rag_utils import ...`
+  - Em `tests/test_get_openai_response.py`: `from app.get_openai_response import ...`
+  - Em `tests/test_rag_utils.py`: `from app.rag_utils import ...`
+  - Corrigidos monkeypatch paths nos testes para refletir nova localização
+- **Resultado:** Todos os testes passando (16/16 em testes específicos)
+
+#### 2. Conversão e Organização da Documentação
+- **Conversão de `GUIA_INICIANTES.py` para `GUIA_INICIANTES.md`:**
+  - Transformado conteúdo ASCII art em Markdown legível
+  - Adicionadas seções estruturadas com títulos, listas e blocos de código
+  - Mantido conteúdo completo mas formatado adequadamente
+- **Movido `diagrama_componentes.puml` para `DOCs/`:**
+  - Arquivo de diagrama agora centralizado com documentação
+
+#### 3. Reestruturação da Pasta DOCs
+- **Criadas subpastas para organização:**
+  - `DOCs/architecture/`: `ARQUITETURA_API.md`, `diagrama_componentes.puml`
+  - `DOCs/guides/`: `GUIA_INICIANTES.md`
+  - `DOCs/dev-logs/`: `CHANGELOG.md` (renomeado de `resumo_configuracao.md`)
+  - `DOCs/`: `API.md` (renomeado de `API_README.md`)
+- **Eliminação de ambiguidades:**
+  - Separados documentos técnicos de guias de usuário
+  - Centralizada documentação por categoria
+
+#### 4. Criação do README.md Principal
+- **Arquivo criado:** `README.md` na raiz do projeto
+- **Conteúdo incluído:**
+  - Visão geral do projeto e arquitetura
+  - Instalação rápida (5 passos)
+  - Uso básico com exemplos curl
+  - Links organizados para documentação detalhada
+  - Informações sobre segurança, testes e contribuição
+  - Badges e formatação adequada
+- **Função:** Ponto de entrada único para documentação do projeto
+
+### Testes Realizados
+- **Reorganização Python:** ✅ Todos os imports ajustados, testes passando
+- **Documentação:** ✅ Arquivos organizados, links funcionais
+- **README.md:** ✅ Estrutura clara, informações completas
+
+### Resultado Final
+- **Status:** ✅ Reorganização completa e funcional
+- **Estrutura final:**
+  ```
+  chatbot/
+  ├── README.md (principal)
+  ├── app/ (todos os .py organizados)
+  ├── tests/ (testes intactos)
+  ├── DOCs/
+  │   ├── API.md
+  │   ├── architecture/
+  │   ├── guides/
+  │   └── dev-logs/
+  └── outros arquivos...
+  ```
+- **Benefícios:** Melhor navegação, documentação centralizada, estrutura mais profissional
+- **Compatibilidade:** Todas as funcionalidades preservadas, testes passando

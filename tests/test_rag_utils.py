@@ -3,7 +3,7 @@ import os
 import fitz
 import pytest
 
-from rag_utils import (
+from app.rag_utils import (
     PDF_PATH,
     extract_text_from_pdf,
     split_text_into_chunks,
@@ -45,7 +45,7 @@ def test_find_relevant_chunks_returns_top_matches():
 
 
 def test_get_context_for_question_returns_empty_when_no_match(monkeypatch):
-    monkeypatch.setattr("rag_utils.extract_text_from_pdf", lambda pdf_path: "uma amostra de texto sem correspondencia")
+    monkeypatch.setattr("app.rag_utils.extract_text_from_pdf", lambda pdf_path: "uma amostra de texto sem correspondencia")
 
     context = get_context_for_question("pergunta irrelevante")
 
@@ -53,7 +53,7 @@ def test_get_context_for_question_returns_empty_when_no_match(monkeypatch):
 
 
 def test_get_context_for_question_returns_context_when_match(monkeypatch):
-    monkeypatch.setattr("rag_utils.extract_text_from_pdf", lambda pdf_path: "cvm resolucao artigo 1 letra A")
+    monkeypatch.setattr("app.rag_utils.extract_text_from_pdf", lambda pdf_path: "cvm resolucao artigo 1 letra A")
 
     context = get_context_for_question("resolucao")
 
@@ -62,6 +62,6 @@ def test_get_context_for_question_returns_context_when_match(monkeypatch):
 
 
 def test_get_context_for_question_uses_default_pdf_path(monkeypatch):
-    monkeypatch.setattr("rag_utils.extract_text_from_pdf", lambda pdf_path: "conteudo de teste")
+    monkeypatch.setattr("app.rag_utils.extract_text_from_pdf", lambda pdf_path: "conteudo de teste")
     context = get_context_for_question("teste")
     assert context == "conteudo de teste"

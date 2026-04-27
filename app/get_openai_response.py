@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from openai import AsyncOpenAI, APIError, APIConnectionError, RateLimitError, APIStatusError
 
 # Importar utilitários RAG
-from rag_utils import get_context_for_question
+from .rag_utils import get_context_for_question
 
 # Configurar logging
 logging.basicConfig(

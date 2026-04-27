@@ -2,7 +2,7 @@ import asyncio
 
 import pytest
 
-from get_openai_response import (
+from app.get_openai_response import (
     OpenAIConfig,
     OpenAIValidationError,
     OpenAIAPIError,
@@ -73,8 +73,8 @@ async def test_get_openai_response_inserts_context(monkeypatch):
         async def create(self, **kwargs):
             return DummyCompletion("resposta simulada")
 
-    monkeypatch.setattr("get_openai_response.get_context_for_question", lambda question: "contexto relevante")
-    monkeypatch.setattr("get_openai_response.AsyncOpenAI", MockAsyncOpenAI)
+    monkeypatch.setattr("app.get_openai_response.get_context_for_question", lambda question: "contexto relevante")
+    monkeypatch.setattr("app.get_openai_response.AsyncOpenAI", MockAsyncOpenAI)
 
     messages = [{"role": "user", "content": "Qual é a regra?"}]
     result = await get_openai_response(messages, config=OpenAIConfig(api_key="x" * 30))
@@ -94,8 +94,8 @@ async def test_get_openai_response_adds_default_system_message_when_no_context(m
         async def create(self, **kwargs):
             return DummyCompletion("outro retorno")
 
-    monkeypatch.setattr("get_openai_response.get_context_for_question", lambda question: "")
-    monkeypatch.setattr("get_openai_response.AsyncOpenAI", MockAsyncOpenAI)
+    monkeypatch.setattr("app.get_openai_response.get_context_for_question", lambda question: "")
+    monkeypatch.setattr("app.get_openai_response.AsyncOpenAI", MockAsyncOpenAI)
 
     messages = [{"role": "user", "content": "Qual é a regra?"}]
     result = await get_openai_response(messages, config=OpenAIConfig(api_key="x" * 30))
